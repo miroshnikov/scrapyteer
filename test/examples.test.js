@@ -58,7 +58,7 @@ test('example2, one page, quotes, authors, tags', async () => {
             {
                 quote: $('.text'),
                 author: $('.author'),
-                bio: pipe($('a'), attr('href'), open, $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
+                bio: pipe($('a'), open, $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
                 tags: pipe($$('.tags > .tag'), text)
             }
         )

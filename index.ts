@@ -1,5 +1,5 @@
 import R from 'ramda'
-import puppeteer from 'puppeteer'
+import puppeteer, { Browser, ElementHandle, Page } from 'puppeteer'
 import fs from 'fs'
 import path from 'path'
 
@@ -19,7 +19,7 @@ declare global {
         interface Global {
             scrapyteer: { 
                 rootURL: string 
-                browser: puppeteer.Browser,
+                browser: Browser,
                 log: boolean
             }
         }
@@ -75,9 +75,16 @@ function createWriteStream(fname?: string|Console): { write: (...args) => void, 
 
 
 
-export async function open(path = '/'): Promise<(f: (page: puppeteer.Page) => any) => any> {
+export async function open(link: string|ElementHandle = '/'): Promise<(f: (page: Page) => any) => any> {
     const page = await global.scrapyteer.browser.newPage()
-    const url = composeURL(path)
+    let url = ''
+    if (typeof link === 'string') {
+        url = link 
+    } else {
+        const tag = (await attr('tagName', link)).toString().toUpperCase()
+        url = tag == 'A' ? await attr('href', link) : await text(link)
+    }
+    url = composeURL(url) 
     return async f => {
         log('open', url)
         await page.goto(url)
@@ -109,18 +116,18 @@ function composeURL(url: string): string {
 
 
 export const $ = R.curry(
-    async (selectors: string, page: puppeteer.Page): Promise<puppeteer.ElementHandle|null> => await page.$(selectors)
+    async (selectors: string, page: Page): Promise<ElementHandle|null> => await page.$(selectors)
 )
 
 export const $$ = R.curry(
-    async (selectors: string, page: puppeteer.Page): Promise<puppeteer.ElementHandle[]> => await page.$$(selectors)
+    async (selectors: string, page: Page): Promise<ElementHandle[]> => await page.$$(selectors)
 )
 
 export const attr = R.curry(
-    async (name: string, element: puppeteer.ElementHandle): Promise<any> => await (await element.getProperty(name)).jsonValue()
+    async (name: string, element: ElementHandle): Promise<any> => await (await element.getProperty(name)).jsonValue()
 )
 
-export const text = async (element: puppeteer.ElementHandle): Promise<string> => await (await element.getProperty('textContent')).jsonValue() as string
+export const text = async (element: ElementHandle): Promise<string> => await (await element.getProperty('textContent')).jsonValue() as string
 
 
 export function pipe(...funcs: any[]): (...args: any[]) => Promise<any>|any {
