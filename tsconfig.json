@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "es6",
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "outDir": "dist"
+    },
+    "lib": ["es2015"]
+}
+
+// {
+//     "compilerOptions": {
+//       "strict": true,
+//       "module": "CommonJS",
+//       "target": "es2015",
+//       "esModuleInterop": true,
+//       "lib": ["esnext"],
+//       "outDir": "dist",
+//       "sourceMap": true,
+//       "declaration": true
+//     },
+//     "include": ["src/**/*", "test/**/*"],
+//     "exclude": ["node_modules"]
+// }
