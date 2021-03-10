@@ -1,4 +1,4 @@
-const { pipe, parse, open, $, $$, attr, text, dump, iteratorToArray } = require('../dist/index.js');
+const { pipe, parse, open, $, $$, attr, text, dump, flattenNext } = require('../dist/index.js');
 const R = require('ramda')
 const fs = require('fs')
 const readline = require('readline')
@@ -66,5 +66,30 @@ test('example2, one page, quotes, authors, tags', async () => {
 
     await parse(config)
 
-    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example2.json'), false) )
+    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example2.jsonl'), false) )
+})
+
+
+
+test('example3, 3 first pages, quotes', async () => {
+    const config = {
+        save: path.resolve(__dirname, 'output3.jsonl'),
+        root: 'http://quotes.toscrape.com',
+        parse: pipe(
+            flattenNext(1),
+            R.map(n => '/page/'+n+'/', R.range(1,4)),
+            open, 
+            $$('.quote'), 
+            {
+                quote: $('.text'),
+                author: $('.author'),
+                bio: pipe($('a'), open, $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
+                tags: pipe($$('.tags > .tag'), text)
+            }
+        )
+    }
+
+    await parse(config)
+
+    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example3.jsonl'), false) )
 })

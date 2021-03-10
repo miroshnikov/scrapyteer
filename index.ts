@@ -13,7 +13,6 @@ export interface Config
     parse: any
 }
 
-
 declare global {
     namespace NodeJS {
         interface Global {
@@ -54,13 +53,13 @@ async function saveOutput(stream: { write: (...args: any[]) => void, close: () =
         throw new Error('Invalid output file type '+fmt)
     }
     if (fmt == '.json') {
-        stream.write(JSON.stringify(isIterable(input) ? await iteratorToArray(input) : input))
+        stream.write(JSON.stringify(await iteratorToArray(input)))
     } else if (fmt == '.jsonl') {
         if (!isIterable(input)) {
-            throw new Error('Cannot save object, that is not iterable as jsonl')
+            throw new Error('Cannot save object, that is not iterable as JSONL')
         }
         for await (const item of input) {
-            stream.write(JSON.stringify(item) + '\n')
+            stream.write(JSON.stringify(await iteratorToArray(item)) + '\n')
         } 
     }
     stream.close()
@@ -70,7 +69,7 @@ function createWriteStream(fname?: string|Console): { write: (...args) => void, 
     if (typeof fname?.['log'] === 'function') {
         return { write: (...args) => console.log(...args), close: () => {} }
     }
-    return fs.createWriteStream(path.resolve(__dirname, fname as string || 'output.json'), { flags: 'a' })
+    return fs.createWriteStream(path.resolve(__dirname, fname as string || 'output.json'), { flags: 'w' })
 }
 
 
@@ -116,11 +115,19 @@ function composeURL(url: string): string {
 
 
 export const $ = R.curry(
-    async (selectors: string, page: Page): Promise<ElementHandle|null> => await page.$(selectors)
+    async (selectors: string, page: Page): Promise<ElementHandle|null> => {
+        const found = await page.$(selectors)
+        log("$("+selectors+")", '→', found ? 'found' : 'not found')
+        return found
+    }
 )
 
 export const $$ = R.curry(
-    async (selectors: string, page: Page): Promise<ElementHandle[]> => await page.$$(selectors)
+    async (selectors: string, page: Page): Promise<ElementHandle[]> => {
+        const found = await page.$$(selectors)
+        log("$$("+selectors+")", '→', found ? found.length : 0)
+        return found
+    }
 )
 
 export const attr = R.curry(
@@ -169,7 +176,7 @@ async function parseObject(object: Record<string, any>, ...args: any[]): Promise
     const res = {}
     for (const prop in object) {
         const v = await stringify( await pipe(object[prop])(...args) )
-        res[prop] = isIterable(v) ? await iteratorToArray(v) : v
+        res[prop] = await iteratorToArray(v)
     }
     return res
 }
@@ -186,13 +193,13 @@ function isIterable(obj: any): boolean {
     if (typeof obj !== 'object') {
         return false
     }
-    return typeof obj[Symbol.iterator] === 'function' || typeof obj[Symbol.asyncIterator] === 'function';
+    return typeof obj[Symbol.iterator] === 'function' || typeof obj[Symbol.asyncIterator] === 'function'
 }
 
-function applyIterable(obj: any, funcs: any[]): {} {
+function applyIterable(iterable: any, funcs: any[]): {} {
     return {
         async *[Symbol.asyncIterator] () {
-            for (const item of obj) {
+            for (const item of iterable) {
                 yield await stringify( await pipe(...funcs)(item) )
             }
         }
@@ -216,6 +223,22 @@ async function stringify(v: any): Promise<any> {
 
 
 
+export function flattenNext(depth = 1) {
+    return (...args: any[]): (f:Function) => Promise<any> =>
+        async (f: Function) => recurseIterable(await f(...args), depth+1)
+}
+
+async function* recurseIterable(iterable, depth: number) {   
+    if (isIterable(iterable) && depth) {
+        for await (const item of iterable) {
+            yield* recurseIterable(item, depth-1)
+        }
+    } else {
+        yield iterable
+    }
+}
+
+
 
 function log(...args: any[]) {
     if (global.scrapyteer.log) {
@@ -229,13 +252,14 @@ export const dump = R.tap(arg => console.log(arg))
 
 
 
-export async function iteratorToArray(iterable): Promise<any[]> { 
-    if (typeof iterable[Symbol.asyncIterator] === 'function') {
+export async function iteratorToArray(iterable): Promise<any> { 
+    if (isIterable(iterable)) {
         const arr = []
         for await (const item of iterable) {
-            arr.push(item)
+            arr.push(await iteratorToArray(item))
         } 
-        return arr    
+        return arr        
     }
-    return Array.from(iterable)
+    return iterable
 }
+
