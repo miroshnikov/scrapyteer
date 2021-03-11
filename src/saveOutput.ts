@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { isIterable } from './isIterable'
-import {iteratorToArray } from './iteratorToArray'
+import { iteratorToArray } from './iteratorToArray'
 
 
 export async function saveOutput(stream: { write: (...args: any[]) => void, close: () => void }, fmt: string, input: any) {
@@ -12,7 +12,7 @@ export async function saveOutput(stream: { write: (...args: any[]) => void, clos
         stream.write(JSON.stringify(await iteratorToArray(input)))
     } else if (fmt == '.jsonl') {
         if (!isIterable(input)) {
-            throw new Error('Cannot save object, that is not iterable as JSONL')
+            throw new Error('Cannot save object that is not iterable as JSONL')
         }
         for await (const item of input) {
             if (item) {

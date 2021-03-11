@@ -1,7 +1,6 @@
 import R from 'ramda'
 import { isIterable } from './isIterable'
 import { iteratorToArray } from './iteratorToArray'
-import { text } from './property'
 
 
 
@@ -38,13 +37,10 @@ export function pipe(...funcs: any[]): (...args: any[]) => Promise<any>|any {
     }
 }
 
-// function async_pipe()
-
 async function parseObject(object: Record<string, any>, ...args: any[]): Promise<Record<string, any>> {
     const res = {}
     for (const prop in object) {
-        const v = await stringify( await pipe(object[prop])(...args) )
-        res[prop] = await iteratorToArray(v)
+        res[prop] = await iteratorToArray( await pipe(object[prop])(...args) )
     }
     return res
 }
@@ -61,15 +57,8 @@ function applyIterable(iterable: any, funcs: any[]): {} {
     return {
         async *[Symbol.asyncIterator] () {
             for (const item of iterable) {
-                yield await stringify( await pipe(...funcs)(item) )
+                yield await pipe(...funcs)(item)
             }
         }
     }
-}
-
-async function stringify(v: any): Promise<any> {
-    if (v && typeof v === 'object' && typeof v['getProperty'] === 'function') {  //ElementHandle
-        return await text(v)
-    }
-    return v
 }

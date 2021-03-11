@@ -37,7 +37,7 @@ test('example1, one page, quotes', async () => {
     const config = {
         save: path.resolve(__dirname, 'output1.json'),
         root: 'http://quotes.toscrape.com',
-        parse: pipe(open(), $$('.quote > .text'), text)
+        parse: pipe(open(), $$('.quote > .text'))
     }
 
     await scrape(config)
@@ -59,7 +59,7 @@ test('example2, one page, quotes, authors, tags', async () => {
                 quote: $('.text'),
                 author: $('.author'),
                 bio: pipe($('a'), open(), $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
-                tags: pipe($$('.tags > .tag'), text)
+                tags: $$('.tags > .tag')
             }
         )
     }
@@ -84,7 +84,7 @@ test('example3, 3 first pages, quotes', async () => {
                 quote: $('.text'),
                 author: $('.author'),
                 bio: pipe($('a'), open(), $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
-                tags: pipe($$('.tags > .tag'), text)
+                tags: $$('.tags > .tag')
             }
         )
     }
@@ -115,4 +115,25 @@ test('example4, authors', async () => {
     await scrape(config)
 
     expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'results/example4.jsonl'), false) )
+})
+
+
+
+test('example5, products with images', async () => {
+    const config = {
+        save: path.resolve(__dirname, 'output5.jsonl'),
+        root: 'http://books.toscrape.com',
+        parse: pipe(
+            open(),
+            $$('h3 > a'),
+            open(),
+            {
+                name: $('h1'),
+                price: pipe( $('.price_color'), text, s => s.substring(1), parseFloat ),
+                attributes: pipe( $$('.table-striped tr'), [$('th'), $('td')] )
+            }
+        )
+    }
+
+    await scrape(config)
 })

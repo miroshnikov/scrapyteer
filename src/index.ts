@@ -21,7 +21,7 @@ export const dump = R.tap(arg => console.log(arg))
 
 export { pipe } from './pipe'
 export { open } from './open'
-export { $, $$ } from './select'
+export { $, $$ } from './query'
 export { attr, text } from './property'
 export { flattenNext } from './flattenNext'
 export { iteratorToArray } from './iteratorToArray'
