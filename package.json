@@ -1,7 +1,7 @@
 {
   "name": "scrapyteer",
   "version": "1.0.0",
-  "description": "Web crawling/scraping framework",
+  "description": "Web scraping/crawling framework for headless Chrome",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -44,6 +44,6 @@
     "url": "https://github.com/miroshnikov/scrapyteer/issues" 
   },
   "jest": {
-    "testTimeout": 20000
+    "testTimeout": 30000
   }
 }

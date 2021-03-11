@@ -1,4 +1,4 @@
-const { pipe, parse, open, $, $$, attr, text, dump, flattenNext } = require('../dist/index.js');
+const { pipe, scrape, open, $, $$, attr, text, dump, flattenNext } = require('../dist/index.js');
 const R = require('ramda')
 const fs = require('fs')
 const readline = require('readline')
@@ -40,7 +40,7 @@ test('example1, one page, quotes', async () => {
         parse: pipe(open, $$('.quote > .text'), text)
     }
 
-    await parse(config)
+    await scrape(config)
 
     expect( loadJSONFile(config.save) )
         .toEqual( JSON.parse(fs.readFileSync(path.resolve(__dirname, 'example1.json')).toString()) )
@@ -64,7 +64,7 @@ test('example2, one page, quotes, authors, tags', async () => {
         )
     }
 
-    await parse(config)
+    await scrape(config)
 
     expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example2.jsonl'), false) )
 })
@@ -89,7 +89,7 @@ test('example3, 3 first pages, quotes', async () => {
         )
     }
 
-    await parse(config)
+    await scrape(config)
 
     expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example3.jsonl'), false) )
 })
