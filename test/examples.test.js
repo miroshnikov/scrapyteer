@@ -37,13 +37,13 @@ test('example1, one page, quotes', async () => {
     const config = {
         save: path.resolve(__dirname, 'output1.json'),
         root: 'http://quotes.toscrape.com',
-        parse: pipe(open, $$('.quote > .text'), text)
+        parse: pipe(open(), $$('.quote > .text'), text)
     }
 
     await scrape(config)
 
     expect( loadJSONFile(config.save) )
-        .toEqual( JSON.parse(fs.readFileSync(path.resolve(__dirname, 'example1.json')).toString()) )
+        .toEqual( JSON.parse(fs.readFileSync(path.resolve(__dirname, 'results/example1.json')).toString()) )
 });
 
 
@@ -53,12 +53,12 @@ test('example2, one page, quotes, authors, tags', async () => {
         save: path.resolve(__dirname, 'output2.jsonl'),
         root: 'http://quotes.toscrape.com',
         parse: pipe(
-            open, 
+            open(), 
             $$('.quote'), 
             {
                 quote: $('.text'),
                 author: $('.author'),
-                bio: pipe($('a'), open, $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
+                bio: pipe($('a'), open(), $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
                 tags: pipe($$('.tags > .tag'), text)
             }
         )
@@ -66,7 +66,7 @@ test('example2, one page, quotes, authors, tags', async () => {
 
     await scrape(config)
 
-    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example2.jsonl'), false) )
+    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'results/example2.jsonl'), false) )
 })
 
 
@@ -78,12 +78,12 @@ test('example3, 3 first pages, quotes', async () => {
         parse: pipe(
             flattenNext(1),
             R.map(n => '/page/'+n+'/', R.range(1,4)),
-            open, 
+            open(), 
             $$('.quote'), 
             {
                 quote: $('.text'),
                 author: $('.author'),
-                bio: pipe($('a'), open, $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
+                bio: pipe($('a'), open(), $('.author-description'), text, s => s.trimStart().substring(0, 20) + '…'),
                 tags: pipe($$('.tags > .tag'), text)
             }
         )
@@ -91,5 +91,28 @@ test('example3, 3 first pages, quotes', async () => {
 
     await scrape(config)
 
-    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'example3.jsonl'), false) )
+    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'results/example3.jsonl'), false) )
+})
+
+
+
+test('example4, authors', async () => {
+    const config = {
+        save: path.resolve(__dirname, 'output4.jsonl'),
+        noRevisit: true,
+        root: 'http://quotes.toscrape.com',
+        parse: pipe(
+            open(), 
+            $$('.author + a'), 
+            open(),
+            {
+                name: $('h3.author-title'),
+                birthdate: $('.author-born-date')
+            }
+        )
+    }
+
+    await scrape(config)
+
+    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'results/example4.jsonl'), false) )
 })

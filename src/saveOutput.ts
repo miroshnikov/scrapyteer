@@ -15,7 +15,9 @@ export async function saveOutput(stream: { write: (...args: any[]) => void, clos
             throw new Error('Cannot save object, that is not iterable as JSONL')
         }
         for await (const item of input) {
-            stream.write(JSON.stringify(await iteratorToArray(item)) + '\n')
+            if (item) {
+                stream.write(JSON.stringify(await iteratorToArray(item)) + '\n')
+            }
         } 
     }
     stream.close()

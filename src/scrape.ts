@@ -9,8 +9,9 @@ export interface Config
 {
     root?: string
     save?: string|Console
-    log?: boolean
     parse: any
+    log?: boolean
+    noRevisit?: boolean
     options: {
         browser: puppeteer.LaunchOptions & puppeteer.ChromeArgOptions & puppeteer.BrowserOptions
     }
@@ -22,7 +23,8 @@ export async function scrape(config: Config) {
     global.scrapyteer = { 
         rootURL: config.root, 
         browser,
-        log: config.log || false
+        log: config.log || false,
+        visited: config.noRevisit ? new Set() : null
     }
 
     await saveOutput(

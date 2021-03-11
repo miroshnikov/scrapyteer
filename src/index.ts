@@ -9,7 +9,8 @@ declare global {
             scrapyteer: { 
                 rootURL: string 
                 browser: Browser,
-                log: boolean
+                log: boolean,
+                visited: Set<string>
             }
         }
     }

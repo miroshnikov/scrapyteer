@@ -13,16 +13,16 @@ export function pipe(...funcs: any[]): (...args: any[]) => Promise<any>|any {
     return async (...args: any[]) => {
         const arg = R.head(args)
 
+        if (args.length == 1 && R.isNil(arg)) {
+            return null
+        }
+
         if (isIterable(arg)) {
             return applyIterable(arg, funcs)
         }
 
         if (typeof arg === 'function') {
             return await arg(pipe(...funcs))
-        }
-
-        if (args.length == 1 && R.isNil(arg)) {
-            return null
         }
 
         if (typeof f === 'function') {
@@ -68,7 +68,7 @@ function applyIterable(iterable: any, funcs: any[]): {} {
 }
 
 async function stringify(v: any): Promise<any> {
-    if (typeof v === 'object' && typeof v['getProperty'] === 'function') {  //ElementHandle
+    if (v && typeof v === 'object' && typeof v['getProperty'] === 'function') {  //ElementHandle
         return await text(v)
     }
     return v
