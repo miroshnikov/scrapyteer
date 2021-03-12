@@ -4,9 +4,15 @@ import { isIterable } from './isIterable'
 import { iteratorToArray } from './iteratorToArray'
 
 
-export async function saveOutput(stream: { write: (...args: any[]) => void, close: () => void }, fmt: string, input: any) {
+
+interface WriteStream {
+    write(...args: any[]): void, 
+    close(): void
+}
+
+export async function saveOutput(stream: WriteStream, fmt: string, input: any) {
     if (!['.json','.jsonl','.csv'].includes(fmt)) {
-        throw new Error('Invalid output file type '+fmt)
+        throw new Error("Invalid output file type '"+fmt+"'")
     }
     if (fmt == '.json') {
         stream.write(JSON.stringify(await iteratorToArray(input)))
@@ -23,7 +29,7 @@ export async function saveOutput(stream: { write: (...args: any[]) => void, clos
     stream.close()
 }
 
-export function createWriteStream(fname?: string|Console): { write: (...args) => void, close: () => void } {
+export function createWriteStream(fname?: string|Console): WriteStream {
     if (typeof fname?.['log'] === 'function') {
         return { write: (...args) => console.log(...args), close: () => {} }
     }

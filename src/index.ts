@@ -16,8 +16,6 @@ declare global {
     }
 }
 
-export const dump = R.tap(arg => console.log(arg))
-
 
 export { pipe } from './pipe'
 export { open } from './open'
@@ -26,3 +24,16 @@ export { attr, text } from './property'
 export { flattenNext } from './flattenNext'
 export { iteratorToArray } from './iteratorToArray'
 export { scrape } from './scrape'
+
+
+export function tap(f: (...args: any[]) => void|Promise<void>): (...args: any[]) => Promise<any> {
+    return async (...args: any[]) => {
+        await f(...args)
+        return R.head(args)
+    }
+}
+
+
+export function dump(s = '') {
+    return tap((...args) => s ? console.log(s, ...args) : console.log(...args))
+}

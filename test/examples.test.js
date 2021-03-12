@@ -130,7 +130,8 @@ test('example5, products with images', async () => {
             {
                 name: $('h1'),
                 price: pipe( $('.price_color'), text, s => s.substring(1), parseFloat ),
-                attributes: pipe( $$('.table-striped tr'), [$('th'), $('td')] )
+                attributes: pipe( $$('.table-striped tr'), [$('th'), $('td')] ),
+                image: pipe( $('#product_gallery .thumbnail img'), attr('src'), dump() )
             }
         )
     }

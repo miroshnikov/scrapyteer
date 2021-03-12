@@ -48,6 +48,6 @@ export function open(options: WaitForOptions & { referer?: string } = {}): (link
     }
 }
 
-function composeURL(url: string): string {
+export function composeURL(url: string): string {
     return url.startsWith('http') ? url : global.scrapyteer.rootURL + url
 }
