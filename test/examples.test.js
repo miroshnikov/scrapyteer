@@ -1,4 +1,4 @@
-const { pipe, scrape, open, $, $$, attr, text, dump, flattenNext } = require('../dist/index.js');
+const { pipe, scrape, open, $, $$, attr, text, save, dump, flattenNext } = require('../dist/index.js');
 const R = require('ramda')
 const fs = require('fs')
 const readline = require('readline')
@@ -131,10 +131,22 @@ test('example5, products with images', async () => {
                 name: $('h1'),
                 price: pipe( $('.price_color'), text, s => s.substring(1), parseFloat ),
                 attributes: pipe( $$('.table-striped tr'), [$('th'), $('td')] ),
-                image: pipe( $('#product_gallery .thumbnail img'), attr('src'), dump() )
+                image1: pipe( $('#product_gallery .thumbnail img'), attr('src'), save() ),
+                image2: pipe( $('#product_gallery .thumbnail img'), save({dir: 'product-images', saveAs: (nm,ext) => 'product_'+nm+ext}) )
             }
         )
     }
 
     await scrape(config)
+
+    expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'results/example5.jsonl'), false) )
+
+    let files = fs.readdirSync(path.resolve(__dirname, '../dist/files'))
+    expect( files.length ).toBe(20)
+    expect( files.includes('08e94f3731d7d6b760dfbfbc02ca5c62.jpg') ).toBe(true)
+    expect( fs.statSync(path.resolve(__dirname, '../dist/files', '08e94f3731d7d6b760dfbfbc02ca5c62.jpg')).size ).toBe(18504)
+    fs.rmdirSync(path.resolve(__dirname,'../dist/files'), { recursive: true })
+
+    expect( fs.readdirSync(path.resolve(__dirname, '../dist/product-images')).length ).toBe(20)
+    fs.rmdirSync(path.resolve(__dirname, '../dist/product-images'), { recursive: true })
 })
