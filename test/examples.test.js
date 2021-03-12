@@ -47,6 +47,42 @@ test('example1, one page, quotes', async () => {
 });
 
 
+test('example1.1, javascript generated', async () => {
+    const config = {
+        save: path.resolve(__dirname, 'output1_1.json'),
+        root: 'http://quotes.toscrape.com/js/',
+        parse: pipe(open(), $$('.quote > .text'))
+    }
+
+    await scrape(config)
+
+    expect( loadJSONFile(config.save) )
+        .toEqual( JSON.parse(fs.readFileSync(path.resolve(__dirname, 'results/example1.json')).toString()) )
+});
+
+
+test('example1.2, author info', async () => {
+    const config = {
+        save: path.resolve(__dirname, 'output1_2.json'),
+        root: 'http://quotes.toscrape.com/author/Albert-Einstein/',
+        parse: pipe(
+            open(),
+            {
+                name: $('.author-title'),
+                birthdate: $('.author-born-date'),
+                bio: $('.author-description')
+            }
+        )
+    }
+
+    await scrape(config)
+
+    expect( loadJSONFile(config.save) )
+        .toEqual( JSON.parse(fs.readFileSync(path.resolve(__dirname, 'results/example1_2.json')).toString()) )
+});
+
+
+
 
 test('example2, one page, quotes, authors, tags', async () => {
     const config = {
