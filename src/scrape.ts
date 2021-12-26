@@ -12,7 +12,7 @@ export interface Config
     log?: boolean
     noRevisit?: boolean
     options: {
-        browser: puppeteer.LaunchOptions & puppeteer.ChromeArgOptions & puppeteer.BrowserOptions
+        browser: puppeteer.LaunchOptions & puppeteer.BrowserLaunchArgumentOptions & puppeteer.BrowserConnectOptions
     }
 }
 

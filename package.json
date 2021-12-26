@@ -15,14 +15,14 @@
   },
   "homepage": "https://github.com/miroshnikov/scrapyteer#readme",
   "devDependencies": {
-    "@types/puppeteer": "^5.4.3",
-    "@types/ramda": "^0.27.38",
-    "jest": "^26.6.3",
-    "typescript": "^4.1.5"
+    "@types/puppeteer": "^5.4.4",
+    "@types/ramda": "^0.27.62",
+    "jest": "^27.4.5",
+    "typescript": "^4.5.4"
   },
   "dependencies": {
-    "commander": "^7.1.0",
-    "puppeteer": "^7.0.4",
+    "commander": "^8.3.0",
+    "puppeteer": "^13.0.1",
     "ramda": "^0.27.1"
   },
   "keywords": [
