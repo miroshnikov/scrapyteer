@@ -35,11 +35,15 @@ async function getLink(link: string|ElementHandle): Promise<string> {
     if (typeof link === 'string') {
         return link
     }
-    if (typeof link['getProperty'] === 'function') {
+    if (isElement(link)) {
         switch ((await attr('tagName', link)).toString().toUpperCase()) {
             case 'IMG': return await attr('src', link)
             case 'A': return await attr('href', link)
         }    
     }
     return ''+link
+}
+
+function isElement(el: string|ElementHandle): el is ElementHandle {
+    return (el as ElementHandle).getProperty !== undefined
 }

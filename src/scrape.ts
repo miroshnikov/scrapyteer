@@ -1,6 +1,5 @@
 import puppeteer from 'puppeteer'
-import { saveOutput, createWriteStream } from './saveOutput'
-import path from 'path'
+import { saveOutput, createWriteStream, getOutputFormat } from './saveOutput'
 import { pipe } from './pipe'
 
 
@@ -26,10 +25,9 @@ export async function scrape(config: Config) {
         log: config.log || false,
         visited: config.noRevisit ? new Set() : null
     }
-
     await saveOutput(
         createWriteStream(config.save), 
-        typeof config['save'] == 'string' ? path.extname(config.save as string).toLowerCase() : 'json',
+        getOutputFormat(config.save),
         await pipe(config.parse)()
     )
 
