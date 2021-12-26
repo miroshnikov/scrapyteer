@@ -10,7 +10,7 @@ program
 program.parse(process.argv)
 const options = program.opts()
 
-const confPath = path.resolve(__dirname, options.config)
+const confPath = path.resolve('./', options.config)
 if (!fs.existsSync(confPath)) {
   console.error(`ERROR: configuration file '${confPath}' not found\nRun 'scrapyteer --help' for usage info.`)
   process.exit(1)
@@ -18,7 +18,7 @@ if (!fs.existsSync(confPath)) {
 
 const config = require(confPath)
 if (!config.save || typeof config.save === 'string') {
-  config.save = path.resolve(__dirname, config.save || 'output.json')
+  config.save = path.resolve('./', config.save || 'output.json')
 }
 scrape(config)
 
