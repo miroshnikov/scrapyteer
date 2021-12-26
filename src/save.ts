@@ -19,7 +19,7 @@ export function save({dir = 'files', saveAs = (nm,ext) => nm+ext}: SaveOptions =
             const url = composeURL(await getLink(link))
             page.on('response', async response => {
                 const fname = saveAs(path.basename(response.url(), path.extname(response.url())), path.extname(response.url()))
-                const fpath = path.resolve(__dirname, dir, fname)
+                const fpath = path.resolve('./', dir, fname)
                 fs.mkdirSync(path.dirname(fpath), { recursive: true })
                 fs.writeFileSync(fpath, await response.buffer(), { flag: 'w' })
                 log('save', url, '→', fpath)

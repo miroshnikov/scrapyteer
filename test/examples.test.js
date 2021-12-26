@@ -177,12 +177,12 @@ test('example5, products with images', async () => {
 
     expect(await loadJSONLFile(config.save)).toEqual( await loadJSONLFile(path.resolve(__dirname, 'results/example5.jsonl'), false) )
 
-    let files = fs.readdirSync(path.resolve(__dirname, '../dist/files'))
+    let files = fs.readdirSync(path.resolve('./files'))
     expect( files.length ).toBe(20)
     expect( files.includes('08e94f3731d7d6b760dfbfbc02ca5c62.jpg') ).toBe(true)
-    expect( fs.statSync(path.resolve(__dirname, '../dist/files', '08e94f3731d7d6b760dfbfbc02ca5c62.jpg')).size ).toBe(18504)
-    fs.rmdirSync(path.resolve(__dirname,'../dist/files'), { recursive: true })
+    expect( fs.statSync(path.resolve('./files', '08e94f3731d7d6b760dfbfbc02ca5c62.jpg')).size ).toBe(18504)
+    fs.rmSync(path.resolve('./files'), { recursive: true })
 
-    expect( fs.readdirSync(path.resolve(__dirname, '../dist/product-images')).length ).toBe(20)
-    fs.rmdirSync(path.resolve(__dirname, '../dist/product-images'), { recursive: true })
+    expect( fs.readdirSync(path.resolve('./product-images')).length ).toBe(20)
+    fs.rmSync(path.resolve('./product-images'), { recursive: true })
 })
