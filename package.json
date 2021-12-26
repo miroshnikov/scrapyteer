@@ -1,6 +1,6 @@
 {
   "name": "scrapyteer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web scraping/crawling framework built on top of headless Chrome",
   "main": "dist/index.js",
   "scripts": {
