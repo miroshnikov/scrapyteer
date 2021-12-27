@@ -2,15 +2,15 @@
 
 Scrapyteer is a **web scraping/crawling tool** built on top of the headless Chrome browser.        
 It allows you to scrape both plain html pages and javascript generated content including SPAs (Single-Page Application) of any kind.
-Scrapyteer offers a small set of functions that forms an easy and concise DSL (Domain Specific Language) for web scraping and allows to define the **shape of output data**. 
+Scrapyteer offers a small set of functions that forms an easy and concise DSL (Domain Specific Language) for web scraping and allows to define a **crawling workflow** and a **shape of output data**. 
 
 ## Installation
-### Locally 
+#### Locally 
 ```sh
 npm i -D scrapyteer
 npm exec -- scrapyteer --config myconf.js.  # or npx scrapyteer --config myconf.js
 ```
-### Locally as dependency
+#### Locally as dependency
 ```sh
 npm init
 npm i -D scrapyteer
@@ -25,7 +25,7 @@ in `package.json`:
 npm run scrape
 ```
 
-### Globally
+#### Globally
 ```sh
 npm install -g scrapyteer
 scrapyteer --config myconf.js
@@ -48,7 +48,7 @@ module.exports = {
     )
 }
 ```
-* Get quotes from [quotes.toscrape.com](http://quotes.toscrape.com) as array of objects with the properties: quote text, author name, first 20 symbols of author biography (follow a link to another page) and array of tags and save to JSONL
+* Get quotes from [quotes.toscrape.com](http://quotes.toscrape.com) as array of objects with the properties: quote text, author name, first 20 symbols of author biography (follow a link to another page) and array of tags.
 ```js
 const { pipe, open, $, $$, text } = require('scrapyteer');
 
@@ -67,7 +67,7 @@ module.exports = {
     )
 }
 ```
-* Get products from [books.toscrape.com](http://books.toscrape.com) with name, price, attributes (as array of `[name, value]`) and images. Images will be saved in `product-images` directory.
+* Get products from [books.toscrape.com](http://books.toscrape.com) with name, price, attributes (as array of `[name, value]`) and images. Image files will be saved in `product-images` directory.
 ```js
 const { pipe, open, $, $$, text, save } = require('scrapyteer');
 
@@ -102,5 +102,24 @@ First row in `result.jsonl` is:
     ["Number of reviews","0"]
   ],
   "image":"fe72f0532301ec28892ae79a629a293c.jpg"
+}
+```
+* Get product titles from the first three pages of catalog at [books.toscrape.com](http://books.toscrape.com)
+```js
+const { pipe, open, $, $$, text, flattenNext } = require('scrapyteer');
+
+module.exports = {
+    save: 'result.json',
+    root: 'http://books.toscrape.com',
+    log: true,
+    parse: pipe(
+        flattenNext(1),  // or else results from every page will be in separate arrays
+        [...Array(3).keys()].map(n => `/catalogue/page-${n+1}.html`),
+        open(),
+        $$('h3 > a'),
+        open(),
+        $('h1'),
+        text
+    )
 }
 ```
