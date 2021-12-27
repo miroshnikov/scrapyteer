@@ -8,7 +8,7 @@ Scrapyteer offers a small set of functions that forms an easy and concise DSL (D
 #### Locally 
 ```sh
 npm i -D scrapyteer
-npm exec -- scrapyteer --config myconf.js.  # or npx scrapyteer --config myconf.js
+npm exec -- scrapyteer --config myconf.js.  # OR npx scrapyteer --config myconf.js
 ```
 #### Locally as dependency
 ```sh
@@ -87,7 +87,7 @@ module.exports = {
     )
 }
 ```
-First row in `result.jsonl` is:
+A row in `result.jsonl` will be like:
 ```json
 {
   "name":"A Light in the Attic",
@@ -111,7 +111,6 @@ const { pipe, open, $, $$, text, flattenNext } = require('scrapyteer');
 module.exports = {
     save: 'result.json',
     root: 'http://books.toscrape.com',
-    log: true,
     parse: pipe(
         flattenNext(1),  // or else results from every page will be in separate arrays
         [...Array(3).keys()].map(n => `/catalogue/page-${n+1}.html`),
@@ -123,3 +122,24 @@ module.exports = {
     )
 }
 ```
+## Configuration options
+#### save 
+A file name or `console` object, by default `output.json` in the current directory
+#### root
+The root URL to scrape
+#### parse
+The parsing workflow, a `pipe` function, an object or an array
+
+## API
+#### pipe(...any)
+Receives a set of functions and invoke them from left to right supplying the return value of the previous as input for the next. If an argument is not a function, it is converted to one (by `indentity`). For objects and arrays all of their items/properties are also parsed. If the return value is an array, the rest of the function chain will be invoked for its every item.
+#### open()
+Opens a given url
+#### $(selectors: string) / $$(selectors: string)
+Receives a page and calls `querySelector` / `querySelectorAll`
+#### attr(name: string)
+Returns an element's property value 
+#### text
+Returns a text content of an element
+#### save({dir='files'}: {dir: string})
+Saves a link to a file and returns the file name
