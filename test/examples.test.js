@@ -1,5 +1,4 @@
 const { pipe, scrape, open, $, $$, attr, text, save, dump, flattenNext } = require('../dist/index.js');
-const R = require('ramda')
 const fs = require('fs')
 const readline = require('readline')
 const path = require('path')
@@ -113,7 +112,7 @@ test('example3, 3 first pages, quotes', async () => {
         root: 'http://quotes.toscrape.com',
         parse: pipe(
             flattenNext(1),
-            R.map(n => '/page/'+n+'/', R.range(1,4)),
+            [...Array(3).keys()].map(n => '/page/'+(n+1)+'/'),
             open(), 
             $$('.quote'), 
             {
