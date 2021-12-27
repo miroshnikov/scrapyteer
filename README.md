@@ -67,7 +67,7 @@ module.exports = {
     )
 }
 ```
-* Get products from [books.toscrape.com](http://books.toscrape.com) with name, price, attributes (as array of `[name, value]`) and images. Image files will be saved in `product-images` directory.
+* Get products from [books.toscrape.com](http://books.toscrape.com) with name, price, attributes and image. Image files will be saved in `product-images` directory.
 ```js
 const { pipe, open, $, $$, text, save } = require('scrapyteer');
 
@@ -80,8 +80,8 @@ module.exports = {
         open(),
         {
             name: $('h1'),
-            price: pipe( $('.price_color'), text, s => s.substring(1), parseFloat ),
-            attributes: pipe( $$('.table-striped tr'), [$('th'), $('td')] ),
+            price: pipe( $('.price_color'), text, s => s.substring(1), parseFloat ),   // '£12.34' -> 12.34
+            attributes: pipe( $$('.table-striped tr'), [$('th'), $('td')] ),   // array of [name, value]
             image: pipe( $('#product_gallery .thumbnail img'), save({dir: 'product-images'}) )
         }
     )
@@ -122,6 +122,30 @@ module.exports = {
     )
 }
 ```
+* Search books on [amazon.com](https://www.amazon.com) and get titles and ISBNs of books on the first page of results
+```js
+const { pipe, open, select, enter, $$, $, text } = require('scrapyteer');
+
+module.exports = {
+    root: 'https://www.amazon.com',
+    parse: pipe(
+        open(),
+        select('#searchDropdownBox', 'search-alias=stripbooks-intl-ship'),  // select 'Books' in dropdown
+        enter('#twotabsearchtextbox', 'Web scraping'),   // enter search phrase
+        $$('.a-section h2'),
+        {
+            name: text,
+            ISBN: pipe(         // go to link and grab ISBN from there
+                $('a'), 
+                open(), 
+                $('#printEditionIsbn_feature_div .a-row:first-child :last-child, #isbn_feature_div .a-row:first-child :last-child'), 
+                text 
+            )
+        }
+    )
+}
+```
+
 ## Configuration options
 #### save 
 A file name or `console` object, by default `output.json` in the current directory
@@ -132,10 +156,10 @@ The parsing workflow, a `pipe` function, an object or an array
 
 ## API
 #### pipe(...any)
-Receives a set of functions and invoke them from left to right supplying the return value of the previous as input for the next. If an argument is not a function, it is converted to one (by `indentity`). For objects and arrays all of their items/properties are also parsed. If the return value is an array, the rest of the function chain will be invoked for its every item.
+Receives a set of functions and invoke them from left to right supplying the return value of the previous as input for the next. If an argument is not a function, it is converted to one (by `indentity`). For objects and arrays all of their items/properties are also parsed. If the return value is an array, the rest of the function chain will be invoked for all of its items.
 #### open()
-Opens a given url
-#### $(selectors: string) / $$(selectors: string)
+Opens a given or root url
+#### $(selector: string) / $$(selector: string)
 Receives a page and calls `querySelector` / `querySelectorAll`
 #### attr(name: string)
 Returns an element's property value 
@@ -143,3 +167,10 @@ Returns an element's property value
 Returns a text content of an element
 #### save({dir='files'}: {dir: string})
 Saves a link to a file and returns the file name
+#### type(inputSelector: string, text: string, delay = 0)
+Types text into an input
+#### select(selectSelector: string, ...values: string[])
+Selects one or more values in a select
+#### enter(inputSelector: string, text: string, delay = 0)
+Types text into an input and presses enter
+
