@@ -31,7 +31,7 @@ npm install -g scrapyteer
 scrapyteer --config myconf.js
 ```
 Make sure `$NODE_PATH` points to where global packages are located. 
-If it is not, you may need to set it e.g. `export NODE_PATH=/path/to/global/node_modules`
+If it doesn't, you may need to set it e.g. `export NODE_PATH=/path/to/global/node_modules`
 
 ## Examples
 Scrapyteer uses a configuration file (`scrapyteer.config.js` by default). Here are some examples:
@@ -153,6 +153,8 @@ A file name or `console` object, by default `output.json` in the current directo
 The root URL to scrape
 #### parse
 The parsing workflow, a `pipe` function, an object or an array
+#### noRevisit
+Set `true` to not revisit already visited pages
 
 ## API
 #### pipe(...any)
@@ -160,7 +162,7 @@ Receives a set of functions and invoke them from left to right supplying the ret
 #### open()
 Opens a given or root url
 #### $(selector: string) / $$(selector: string)
-Receives a page and calls `querySelector` / `querySelectorAll`
+Calls `querySelector` / `querySelectorAll` on page/element
 #### attr(name: string)
 Returns an element's property value 
 #### text
