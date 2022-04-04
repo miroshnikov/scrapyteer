@@ -1,6 +1,6 @@
 {
   "name": "scrapyteer",
-  "version": "1.0.4",
+  "version": "1.2.0",
   "description": "Web scraping/crawling framework built on top of headless Chrome",
   "main": "dist/index.js",
   "scripts": {
@@ -16,15 +16,15 @@
   },
   "homepage": "https://github.com/miroshnikov/scrapyteer#readme",
   "devDependencies": {
-    "@types/puppeteer": "^5.4.4",
-    "@types/ramda": "^0.27.62",
-    "jest": "^27.4.5",
-    "typescript": "^4.5.4"
+    "@types/puppeteer": "^5.4.5",
+    "@types/ramda": "^0.28.7",
+    "jest": "^27.5.1",
+    "typescript": "^4.6.3"
   },
   "dependencies": {
-    "commander": "^8.3.0",
-    "puppeteer": "^13.0.1",
-    "ramda": "^0.27.1"
+    "commander": "^9.1.0",
+    "puppeteer": "^13.5.2",
+    "ramda": "^0.28.0"
   },
   "keywords": [
     "scrape",
@@ -53,6 +53,6 @@
     "scrapyteer": "bin/scrapyteer.js"
   },
   "jest": {
-    "testTimeout": 40000
+    "testTimeout": 60000
   }
 }
