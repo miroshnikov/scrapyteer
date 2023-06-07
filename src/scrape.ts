@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer'
+import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, launch } from 'puppeteer'
 import { saveOutput, createWriteStream, getOutputFormat } from './saveOutput'
 import { pipe } from './pipe'
 
@@ -12,13 +12,13 @@ export interface Config
     log?: boolean
     noRevisit?: boolean
     options: {
-        browser: puppeteer.LaunchOptions & puppeteer.BrowserLaunchArgumentOptions & puppeteer.BrowserConnectOptions
+        browser: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
     }
 }
 
 
 export async function scrape(config: Config) {
-    const browser = await puppeteer.launch(config.options?.browser || {})
+    const browser = await launch({ headless: "new", ...config.options?.browser })
     global.scrapyteer = { 
         rootURL: config.root, 
         browser,
