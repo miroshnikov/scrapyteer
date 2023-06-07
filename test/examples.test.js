@@ -36,7 +36,7 @@ test('example1, one page, quotes', async () => {
     const config = {
         save: path.resolve(__dirname, 'output1.json'),
         root: 'http://quotes.toscrape.com',
-        parse: pipe(open(), $$('.quote > .text'))
+        parse: pipe(open(), $$(['.non-existent-selector', '.quote > .text']))
     }
 
     await scrape(config)
@@ -67,8 +67,8 @@ test('example1.2, author info', async () => {
         parse: pipe(
             open(),
             {
-                name: $('.author-title'),
-                birthdate: $('.author-born-date'),
+                name: $(['.non-existent-selector', '.author-title']),
+                birthdate: $(['.author-born-date', '.non-existent-selector']),
                 bio: $('.author-description')
             }
         )

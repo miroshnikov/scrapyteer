@@ -7,7 +7,8 @@ import { log } from './log'
 
 export function open(options: WaitForOptions & { referer?: string } = {}): (link: string|ElementHandle) => Promise<(f: (page: Page) => any) => any>  {
     return async (link: string|ElementHandle = '/'): Promise<(f: (page: Page) => any) => any> => {
-        const page = await global.scrapyteer.browser.newPage()
+        const page = await global.scrapyteer.browser.newPage() as Page
+        page.setDefaultNavigationTimeout(0)
         let url = ''
         if (typeof link === 'string') {
             url = link 
@@ -23,8 +24,9 @@ export function open(options: WaitForOptions & { referer?: string } = {}): (link
             global.scrapyteer.visited.add(url)
         }
         return async f => {
-            log('open', url)
-            await page.goto(url, options)
+            log('Opening', url, '...')
+            const resp = await page.goto(url, options)
+            log(resp.ok() ? 'successful' : 'failed', 'with status', resp.status())
             const res = await f(page)
             if (isIterable(res)) {
                 const it = typeof res[Symbol.asyncIterator] === 'function' ? res[Symbol.asyncIterator]() : res[Symbol.iterator]()
@@ -32,7 +34,7 @@ export function open(options: WaitForOptions & { referer?: string } = {}): (link
                     next: async () => {
                         const {done, value} = await it.next()
                         if (done) {
-                            log('close', url)
+                            log('Close', url)
                             await page.close() 
                         }
                         return {done, value}
@@ -40,7 +42,7 @@ export function open(options: WaitForOptions & { referer?: string } = {}): (link
                     [Symbol.asyncIterator]: function() { return this }
                 }
             } else {
-                log('close', url)
+                log('Close', url)
                 await page.close()    
             }
             return res
