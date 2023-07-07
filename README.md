@@ -4,34 +4,10 @@ Scrapyteer is a Node.js **web scraping** framework/tool/library built on top of 
 It allows you to scrape both plain html pages and javascript generated content including SPAs (Single-Page Application) of any kind.
 Scrapyteer offers a small set of functions that forms an easy and concise DSL (Domain Specific Language) for web scraping and allows to define a **crawling workflow** and a **shape of output data**. 
 
-## Installation
-### Locally 
-```sh
-npm i -D scrapyteer
-npm exec -- scrapyteer --config myconf.js.  # OR npx scrapyteer --config myconf.js
-```
-### Locally as dependency
-```sh
-npm init
-npm i -D scrapyteer
-```
-in `package.json`:
-```json
-"scripts": {
-  "scrape": "scrapyteer --config myconf.js"
-}
-```
-```sh
-npm run scrape
-```
-
-### Globally
-```sh
-npm install -g scrapyteer
-scrapyteer --config myconf.js
-```
-Make sure `$NODE_PATH` points to where global packages are located. 
-If it doesn't, you may need to set it e.g. `export NODE_PATH=/path/to/global/node_modules`
+- [Examples](#examples)
+- [Installation](#installation)
+- [Configuration options](#configuration-options)
+- [API](#api)
 
 ## Examples
 Scrapyteer uses a configuration file (`scrapyteer.config.js` by default). 
@@ -109,6 +85,36 @@ books.jsonl
 ...
 */
 ```
+
+## Installation
+### Locally 
+```sh
+npm i -D scrapyteer
+npm exec -- scrapyteer --config myconf.js.  # OR npx scrapyteer --config myconf.js
+```
+### Locally as dependency
+```sh
+npm init
+npm i -D scrapyteer
+```
+in `package.json`:
+```json
+"scripts": {
+  "scrape": "scrapyteer --config myconf.js"
+}
+```
+```sh
+npm run scrape
+```
+
+### Globally
+```sh
+npm install -g scrapyteer
+scrapyteer --config myconf.js
+```
+Make sure `$NODE_PATH` points to where global packages are located. 
+If it doesn't, you may need to set it e.g. `export NODE_PATH=/path/to/global/node_modules`
+
 
 ## Configuration options
 
