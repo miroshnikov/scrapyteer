@@ -157,17 +157,23 @@ If the return value is an `array`, _the rest of the function chain will be invok
 
 ### open
 Opens a given or root url
+```typescript
+open(url: string|null = null)
+```
 
 ### $ / $$
 ```typescript
-$(selector: string|string[])
-$$(selector: string|string[])
+$(selector: string|string[]) => Element|null
+$$(selector: string|string[]) => Element[]
 ```
 Calls `querySelector` / `querySelectorAll` on page/element.     
 If an array of selectors is passed, uses the first one that exists. It is useful if data may be in various places of the DOM.
 
-### attr(name: string)
+### attr
 Returns an element's property value 
+```typescript
+attr(name: string)
+```
 
 ### text
 Returns a text content of an element
@@ -179,12 +185,20 @@ save({dir='files'}: {dir: string, saveAs?: (name: string, ext: string) => string
 Saves a link to a file and returns the file name.   
 `saveAs` allows to modify a saved file name or extension.
 
-### type(inputSelector: string, text: string, delay = 0)
+### type
 Types text into an input
+```typescript
+type(inputSelector: string, text: string, delay = 0)
+```
 
-### select(selectSelector: string, ...values: string[])
+### select
 Selects one or more values in a select
+```typescript
+select(selectSelector: string, ...values: string[])
+```
 
-### enter(inputSelector: string, text: string, delay = 0)
+### enter
 Types text into an input and presses enter
-
+```typescript
+enter(inputSelector: string, text: string, delay = 0)
+```
