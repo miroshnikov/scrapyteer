@@ -18,7 +18,7 @@ export interface Config
 
 
 export async function scrape(config: Config) {
-    const browser = await launch({ headless: "new", ...config.options?.browser })
+    const browser = await launch({ headless: true, ...config.options?.browser })
     global.scrapyteer = { 
         rootURL: config.root, 
         browser,
