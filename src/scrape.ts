@@ -1,8 +1,6 @@
-import { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions, launch } from 'puppeteer'
+import { LaunchOptions, launch } from 'puppeteer'
 import { saveOutput, createWriteStream, getOutputFormat } from './saveOutput'
 import { pipe } from './pipe'
-
-
 
 export interface Config
 {
@@ -12,7 +10,7 @@ export interface Config
     log?: boolean
     noRevisit?: boolean
     options: {
-        browser: LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
+        browser: LaunchOptions
     }
 }
 

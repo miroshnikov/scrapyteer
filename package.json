@@ -16,14 +16,14 @@
   },
   "homepage": "https://github.com/miroshnikov/scrapyteer#readme",
   "devDependencies": {
-    "@types/ramda": "^0.29.11",
-    "jest": "^29.7.0",
-    "typescript": "^5.3.3"
+    "@types/ramda": "^0.31.1",
+    "jest": "^30.3.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "commander": "^12.0.0",
-    "puppeteer": "^22.3.0",
-    "ramda": "^0.29.1"
+    "commander": "^14.0.3",
+    "puppeteer": "^24.39.1",
+    "ramda": "^0.32.0"
   },
   "keywords": [
     "scrape",
